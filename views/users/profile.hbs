@@ -17,7 +17,7 @@
           <p class="card-text mt-4">{{user.email}}</p>
           <p class="card-text"><strong>
               {{#if user.Comments.length}}
-              {{user.Comments.length}}已評論餐廳
+              已評論餐廳數：{{user.Comments.length}}間
               {{else}}
               尚未評論餐廳
               {{/if}}</strong>
@@ -35,10 +35,12 @@
   <div class="card mt-5">
     <div class="card-header">
       {{#if user.Comments.length}}
-      {{user.Comments.length}}已評論餐廳
+      已評論餐廳數：<strong>{{user.Comments.length}}間</strong>
       {{else}}
       尚未評論餐廳
       {{/if}}
+      </br>
+      已累積評論數：<strong>{{comments}}則</strong>
     </div>
     <div class="card-body" style="min-height: 100px;">
       {{#each user.Comments}}

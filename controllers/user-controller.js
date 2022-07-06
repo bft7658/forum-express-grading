@@ -41,18 +41,25 @@ const userController = {
     res.redirect('/signin')
   },
   getUser: (req, res, next) => {
-    return User.findByPk(req.params.id, {
-      include: [
-        { model: Comment, include: Restaurant }
-      ],
-      order: [
-        [{ model: Comment }, 'createdAt', 'DESC']
-      ]
-    })
-      .then(user => {
+    Promise.all([
+      User.findByPk(req.params.id, {
+        include: [
+          { model: Comment, include: Restaurant }
+        ],
+        group: ['restaurant_id'],
+        order: [
+          [{ model: Comment }, 'createdAt', 'DESC']
+        ]
+      }),
+      Comment.findAndCountAll({
+        where: { userId: req.params.id }
+      })
+    ])
+      .then(([user, comments]) => {
         if (!user) throw new Error("User didn't exist!")
         res.render('users/profile', {
-          user: user.toJSON()
+          user: user.toJSON(),
+          comments: comments.count
         })
       })
       .catch(err => next(err))
