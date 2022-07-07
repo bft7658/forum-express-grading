@@ -103,11 +103,16 @@ const restaurantController = {
       .then(([restaurants, comments]) => {
         const data = restaurants.map(r => ({
           ...r,
-          description: r.description.substring(0, 50) + '...'
+          name: r.name.substring(0, 15) + '...',
+          description: r.description.substring(0, 30) + '...'
+        }))
+        const result = comments.map(c => ({
+          ...c,
+          text: c.text.substring(0, 20) + '...'
         }))
         res.render('feeds', {
           restaurants: data,
-          comments
+          comments: result
         })
       })
       .catch(err => next(err))

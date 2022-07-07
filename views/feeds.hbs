@@ -9,15 +9,25 @@
       </div>
       <div class="card-body">
         {{#each restaurants}}
-        <div>
-          <h4>
-            <a class="link-primary" href="/restaurants/{{this.id}}">{{this.name}}</a>
-            <small class="fs-6">[{{this.Category.name}}]</small>
-          </h4>
-          <p class="my-4" style="white-space: break-spaces;">{{this.description}}</p>
-          {{relativeTimeFromNow this.createdAt}}
-          <hr>
+        <div class="row" style="max-height: 240px;">
+          <div class="col-md-4 mt-3">
+            <a href="/restaurants/{{this.id}}">
+              <img class="card-img-top img-fluid" src="{{this.image}}" alt="Card image cap" width="180px" height="180px"
+                style="transition: opacity 0.5s; opacity:0; border-radius: 10px;" onload="this.style.opacity=1;">
+            </a>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="/restaurants/{{this.id}}" style="text-decoration:none;">{{this.name}}</a>
+              </h5>
+              <span class="bg-secondary badge">{{this.Category.name}}</span>
+              <p class="card-text mt-2">{{this.description}}</p>
+              <small class="link-secondary">— {{relativeTimeFromNow this.createdAt}}</small>
+            </div>
+          </div>
         </div>
+        <hr>
         {{/each}}
       </div>
     </div>
@@ -29,15 +39,26 @@
       </div>
       <div class="card-body">
         {{#each comments}}
-        <div>
-          <h4>
-            <a class="link-primary" href="/restaurants/{{this.Restaurant.id}}">{{this.Restaurant.name}}</a>
-          </h4>
-          <p class="my-4" style="white-space: break-spaces;">{{this.text}}</p>
-          - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
-          <small>at {{relativeTimeFromNow this.createdAt}}</small>
-          <hr>
+        <div class="row" style="max-height: 240px;">
+          <div class="col-md-4 mt-3">
+            <a href="/restaurants/{{this.Restaurant.id}}">
+              <img class="card-img-top img-fluid" src="{{this.Restaurant.image}}" alt="Card image cap" width="180px"
+                height="180px" style="transition: opacity 0.5s; opacity:0; border-radius: 10px;"
+                onload="this.style.opacity=1;">
+            </a>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="/restaurants/{{this.Restaurant.id}}" style="text-decoration:none;">{{this.Restaurant.name}}</a>
+              </h5>
+              <p class="card-text mt-2">{{this.text}}</p>
+              - <a class="link-secondary" href="/users/{{this.User.id}}">{{this.User.name}}</a>
+              <small>at {{relativeTimeFromNow this.createdAt}}</small>
+            </div>
+          </div>
         </div>
+        <hr>
         {{/each}}
       </div>
     </div>
