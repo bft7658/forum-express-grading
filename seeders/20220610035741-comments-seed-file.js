@@ -12,7 +12,7 @@ module.exports = {
       { type: queryInterface.sequelize.QueryTypes.SELECT }
     )
     await queryInterface.bulkInsert('Comments',
-      Array.from({ length: 40 }, () => ({
+      Array.from({ length: 60 }, () => ({
         text: faker.lorem.sentence(3),
         user_id: users[Math.floor(Math.random() * users.length)].id,
         restaurant_id: restaurants[Math.floor(Math.random() * restaurants.length)].id,

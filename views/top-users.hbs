@@ -20,9 +20,17 @@
       <button type="submit" class="btn btn-danger">取消追蹤</button>
     </form>
     {{else}}
+    {{#ifCond this.id ../loginUser.id}}
+    <form style="display: contents;">
+      <button type="submit" class="btn btn-secondary" disabled>
+        You
+      </button>
+    </form>
+    {{else}}
     <form action="/following/{{this.id}}" method="POST" style="display: contents;">
       <button type="submit" class="btn btn-primary">追蹤</button>
     </form>
+    {{/ifCond}}
     {{/if}}
     </p>
   </div>

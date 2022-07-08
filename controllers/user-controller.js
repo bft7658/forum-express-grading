@@ -44,22 +44,37 @@ const userController = {
     Promise.all([
       User.findByPk(req.params.id, {
         include: [
-          { model: Comment, include: Restaurant }
+          { model: Comment, include: Restaurant },
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' }
         ],
-        group: ['restaurant_id'],
         order: [
           [{ model: Comment }, 'createdAt', 'DESC']
         ]
       }),
+      // 取得所有評論數，不考慮重複問題
       Comment.findAndCountAll({
         where: { userId: req.params.id }
+      }),
+      // 將重複留言的餐廳進行篩選，使其合併代表同一間餐廳
+      Comment.findAll({
+        include: Restaurant,
+        where: { userId: req.params.id },
+        group: ['restaurant_id'],
+        nest: true,
+        raw: true
       })
     ])
-      .then(([user, comments]) => {
+      .then(([user, totalComments, commentedRestaurants]) => {
         if (!user) throw new Error("User didn't exist!")
+        // 判斷目前登入使用者是否已追蹤該 user 物件
+        const isFollowed = req.user.Followings.some(f => f.id === user.id)
         res.render('users/profile', {
           user: user.toJSON(),
-          comments: comments.count
+          totalComments,
+          commentedRestaurants,
+          isFollowed
         })
       })
       .catch(err => next(err))
