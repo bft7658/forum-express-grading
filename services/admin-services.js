@@ -1,4 +1,5 @@
 const { Restaurant, Category } = require('../models')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
   getRestaurants: (req, cb) => {
@@ -9,6 +10,24 @@ const adminServices = {
       include: [Category]
     })
       .then(restaurants => cb(null, { restaurants }))
+      .catch(err => cb(err))
+  },
+  postRestaurant: (req, cb) => {
+    const { name, tel, address, openingHours, description, categoryId } = req.body
+    // 雖然前端有 required 作機制，但是怕被修改，所以後端這邊也做一道驗證機制，確保一定有拿到 name 這個資料
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    imgurFileHandler(file)
+      .then(filePath => Restaurant.create({
+        name,
+        tel,
+        address,
+        openingHours,
+        description,
+        image: filePath || null,
+        categoryId
+      }))
+      .then(newRestaurant => cb(null, { restaurant: newRestaurant }))
       .catch(err => cb(err))
   },
   deleteRestaurant: (req, cb) => {
