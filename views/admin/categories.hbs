@@ -36,6 +36,8 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>
+        {{#ifCond this.name '(尚待分類)'}}
+        {{else}}
         <button type="button" class="btn btn-link">
           <a class="btn btn-link link-primary" style="text-decoration:none;" href="/admin/categories/{{this.id}}">
             Edit
@@ -45,6 +47,7 @@
           <button type="submit" class="btn btn-link link-danger" style="text-decoration:none;"
             onclick="return confirm(`確定要刪除 {{ this.name }} 嗎？`)">Delete</button>
         </form>
+        {{/ifCond}}
       </td>
     </tr>
     {{/each}}
