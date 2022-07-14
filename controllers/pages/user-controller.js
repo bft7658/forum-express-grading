@@ -93,7 +93,6 @@ const userController = {
     const id = req.params.id
     const { name } = req.body
     const { file } = req // 把檔案取出來
-    if (!name.trim()) throw new Error('User name is required!')
 
     return Promise.all([
       User.findByPk(id),
@@ -101,6 +100,11 @@ const userController = {
     ])
       .then(([user, filePath]) => {
         if (!user) throw new Error("User didn't exist!")
+        // 因為在前端設置 root 不能更改名字的限制，所以這裡再次進行判斷，特別是當名字修改成 root 的時候
+        if (user.email !== 'root@example.com') {
+          if (name === 'root') throw new Error('禁止將名字修改成 root')
+          if (!name.trim()) throw new Error('User name is required!')
+        }
         return user.update({
           name: name.trim(),
           image: filePath || user.image

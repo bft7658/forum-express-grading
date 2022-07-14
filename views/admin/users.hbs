@@ -17,7 +17,11 @@
       <th scope="row">{{this.id}}</th>
       <td>{{this.name}}</td>
       <td>{{this.email}}</td>
-      <td>{{#if this.isAdmin}}admin{{else}}user{{/if}}</td>
+      {{#ifCond this.email 'root@example.com'}}
+      <td>Super Admin</td>
+      <td>最高權限，不能更動</td>
+      {{else}}
+      <td>{{#if this.isAdmin}}Admin{{else}}User{{/if}}</td>
       <td>
         <form action="/admin/users/{{this.id}}?_method=PATCH" method="POST">
           <button type="submit" class="btn btn-link" style="text-decoration:none;">
@@ -25,8 +29,7 @@
           </button>
         </form>
       </td>
-      </form>
-      </td>
+      {{/ifCond}}
     </tr>
     {{/each}}
   </tbody>
