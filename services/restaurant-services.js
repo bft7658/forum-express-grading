@@ -131,6 +131,21 @@ const restaurantServices = {
         return cb(null, { restaurants: result })
       })
       .catch(err => cb(err))
+  },
+  getDashboard: (req, cb) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        Comment,
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Dashboard didn't exist!")
+        return cb(null, { restaurant: restaurant.toJSON() })
+      })
+      .catch(err => cb(err))
   }
 }
 

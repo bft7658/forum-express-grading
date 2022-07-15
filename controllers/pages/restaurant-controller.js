@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User } = require('../../models')
+
 const restaurantServices = require('../../services/restaurant-services')
 
 const restaurantController = {
@@ -9,19 +9,7 @@ const restaurantController = {
     restaurantServices.getRestaurant(req, (err, data) => err ? next(err) : res.render('restaurant', data))
   },
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        Comment,
-        { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' }
-      ]
-    })
-      .then(restaurant => {
-        if (!restaurant) throw new Error("Dashboard didn't exist!")
-        res.render('dashboard', { restaurant: restaurant.toJSON() })
-      })
-      .catch(err => next(err))
+    restaurantServices.getDashboard(req, (err, data) => err ? next(err) : res.render('dashboard', data))
   },
   getFeeds: (req, res, next) => {
     restaurantServices.getFeeds(req, (err, data) => err ? next(err) : res.render('feeds', data))
