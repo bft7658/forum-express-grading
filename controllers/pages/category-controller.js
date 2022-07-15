@@ -6,15 +6,11 @@ const categoryController = {
     categoryServices.getCategories(req, (err, data) => err ? next(err) : res.render('admin/categories', data))
   },
   postCategories: (req, res, next) => {
-    const { name } = req.body
-    if (!name) throw new Error('Category name is required!')
-    return Category.findOne({ where: { name } })
-      .then(existedName => {
-        if (existedName) throw new Error('Category name already exists')
-        return Category.create({ name })
-      })
-      .then(() => res.redirect('/admin/categories'))
-      .catch(err => next(err))
+    categoryServices.postCategories(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'category was successfully created')
+      res.redirect('/admin/categories')
+    })
   },
   putCategory: (req, res, next) => {
     const { name } = req.body
