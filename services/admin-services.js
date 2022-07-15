@@ -12,6 +12,18 @@ const adminServices = {
       .then(restaurants => cb(null, { restaurants }))
       .catch(err => cb(err))
   },
+  getRestaurant: (req, cb) => {
+    Restaurant.findByPk(req.params.id, {
+      raw: true,
+      nest: true,
+      include: [Category]
+    })
+      .then(restaurant => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        cb(null, { restaurant })
+      })
+      .catch(err => cb(err))
+  },
   postRestaurant: (req, cb) => {
     const { name, tel, address, openingHours, description, categoryId } = req.body
     // 雖然前端有 required 作機制，但是怕被修改，所以後端這邊也做一道驗證機制，確保一定有拿到 name 這個資料
