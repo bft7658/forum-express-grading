@@ -6,6 +6,9 @@ const restaurantController = {
   },
   getRestaurant: (req, res, next) => {
     restaurantServices.getRestaurant(req, (err, data) => err ? next(err) : res.json(data))
+  },
+  getFeeds: (req, res, next) => {
+    restaurantServices.getFeeds(req, (err, data) => err ? next(err) : res.json(data))
   }
 }
 

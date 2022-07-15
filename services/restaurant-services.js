@@ -72,6 +72,40 @@ const restaurantServices = {
         })
       })
       .catch(err => cb(err))
+  },
+  getFeeds: (req, cb) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [Category],
+        raw: true,
+        nest: true
+      }),
+      Comment.findAll({
+        limit: 10,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant],
+        raw: true,
+        nest: true
+      })
+    ])
+      .then(([restaurants, comments]) => {
+        const data = restaurants.map(r => ({
+          ...r,
+          name: r.name.substring(0, 15) + '...',
+          description: r.description.substring(0, 30) + '...'
+        }))
+        const result = comments.map(c => ({
+          ...c,
+          text: c.text.substring(0, 20) + '...'
+        }))
+        cb(null, {
+          restaurants: data,
+          comments: result
+        })
+      })
+      .catch(err => cb(err))
   }
 }
 
