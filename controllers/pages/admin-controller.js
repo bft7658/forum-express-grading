@@ -1,5 +1,4 @@
 const { Restaurant, User, Category } = require('../../models')
-const { imgurFileHandler } = require('../../helpers/file-helpers')
 const adminServices = require('../../services/admin-services')
 
 const adminController = {
@@ -37,31 +36,11 @@ const adminController = {
       .catch(err => next(err))
   },
   putRestaurant: (req, res, next) => {
-    const { name, tel, address, openingHours, description, categoryId } = req.body
-    if (!name) throw new Error('Restaurant name is required!')
-    const { file } = req
-    Promise.all([
-      Restaurant.findByPk(req.params.id),
-      imgurFileHandler(file)
-    ])
-      .then(([restaurant, filePath]) => {
-        if (!restaurant) throw new Error("Restaurant didn't exist!")
-        return restaurant.update({
-          name,
-          tel,
-          address,
-          openingHours,
-          description,
-          image: filePath || restaurant.image,
-          // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
-          categoryId
-        })
-      })
-      .then(() => {
-        req.flash('success_messages', 'restaurant was successfully to update')
-        res.redirect('/admin/restaurants')
-      })
-      .catch(err => next(err))
+    adminServices.putRestaurant(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', 'restaurant was successfully to update')
+      res.redirect('/admin/restaurants')
+    })
   },
   deleteRestaurant: (req, res, next) => {
     adminServices.deleteRestaurant(req, (err, data) => err ? next(err) : res.redirect('/admin/restaurants', data))

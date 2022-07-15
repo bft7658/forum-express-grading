@@ -42,6 +42,30 @@ const adminServices = {
       .then(newRestaurant => cb(null, { restaurant: newRestaurant }))
       .catch(err => cb(err))
   },
+  putRestaurant: (req, cb) => {
+    const { name, tel, address, openingHours, description, categoryId } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      imgurFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || restaurant.image,
+          // 如果 filePath 是 Truthy (使用者有上傳新照片) 就用 filePath，是 Falsy (使用者沒有上傳新照片) 就沿用原本資料庫內的值
+          categoryId
+        })
+      })
+      .then(putRestaurant => cb(null, { restaurant: putRestaurant }))
+      .catch(err => cb(err))
+  },
   deleteRestaurant: (req, cb) => {
     Restaurant.findByPk(req.params.id)
       .then(restaurant => {
