@@ -1,4 +1,4 @@
-const { Restaurant, Category, Comment, User, sequelize, Favorite } = require('../../models')
+const { Restaurant, Category, Comment, User } = require('../../models')
 const restaurantServices = require('../../services/restaurant-services')
 
 const restaurantController = {
@@ -27,29 +27,7 @@ const restaurantController = {
     restaurantServices.getFeeds(req, (err, data) => err ? next(err) : res.render('feeds', data))
   },
   getTopRestaurants: (req, res, next) => {
-    return Favorite.findAll({
-      attributes: {
-        include: [
-          [sequelize.fn('COUNT', sequelize.col('restaurant_id')), 'counts']
-        ]
-      },
-      include: [Restaurant],
-      group: ['restaurant_id'],
-      order: [[sequelize.col('counts'), 'DESC'], ['restaurantId', 'ASC']],
-      limit: 10,
-      raw: true,
-      nest: true
-    })
-      .then(favoriteRestaurants => {
-        const result = favoriteRestaurants.map(r => ({
-          counts: r.counts,
-          ...r.Restaurant,
-          description: r.Restaurant.description.substring(0, 50),
-          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.Restaurant.id)
-        }))
-        res.render('top-restaurants', { restaurants: result })
-      })
-      .catch(err => next(err))
+    restaurantServices.getTopRestaurants(req, (err, data) => err ? next(err) : res.render('top-restaurants', data))
   }
 }
 module.exports = restaurantController
