@@ -20,7 +20,7 @@ const userController = {
     }
   },
   getUser: (req, res, next) => {
-    userServices.getUser(req, (err, data) => err ? next(err) : res.json(data))
+    userServices.getUser(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   }
 }
 

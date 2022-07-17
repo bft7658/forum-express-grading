@@ -38,7 +38,7 @@ const adminController = {
   putRestaurant: (req, res, next) => {
     adminServices.putRestaurant(req, (err, data) => {
       if (err) return next(err)
-      req.flash('success_messages', 'restaurant was successfully to update')
+      req.flash('success_messages', 'restaurant was successfully updated')
       res.redirect('/admin/restaurants')
     })
   },
